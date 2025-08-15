@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Text & Speech Converter</title>
-     <link rel="shortcut icon" href="images/text&speech.jpg" type="image/x-icon">
+    <link rel="shortcut icon" href="images/text&speech.jpg" type="image/x-icon">
+    <link rel="manifest" href="/manifest.json">
     <style>
         * {
             margin: 0;
@@ -140,6 +141,29 @@
             text-align: center;
         }
 
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff2963;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .install-prompt button {
+            background: white;
+            color: #ff2963;
+            margin-left: 10px;
+            padding: 5px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
         @media (max-width: 600px) {
             .hero h1 {
                 font-size: 32px;
@@ -167,6 +191,10 @@
             button {
                 font-size: 14px;
                 padding: 10px 20px;
+            }
+
+            .install-prompt {
+                width: 90%;
             }
         }
     </style>
@@ -206,7 +234,40 @@
         </div>
         <footer>DESIGNED BY ANDRE WANYU</footer>
     </div>
+    <div id="install-prompt" class="install-prompt">
+        Install Text & Speech Converter? <button id="install-btn">Install</button>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
-    <script src="speech.js"></script>
+    <script src="/speech.js"></script>
+    <script>
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const installPrompt = document.getElementById('install-prompt');
+            installPrompt.style.display = 'block';
+
+            document.getElementById('install-btn').addEventListener('click', () => {
+                installPrompt.style.display = 'none';
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('User accepted the install prompt');
+                        }
+                        deferredPrompt = null;
+                    });
+                }
+            });
+        });
+
+        // Register the service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(() => console.log('Service Worker registered'))
+                .catch(err => console.error('Service Worker registration failed:', err));
+        }
+    </script>
 </body>
 </html>
