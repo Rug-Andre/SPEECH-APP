@@ -142,16 +142,15 @@
         }
 
         .install-prompt {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            margin-top: 20px;
             background: #ff2963;
             color: white;
             padding: 10px 20px;
             border-radius: 8px;
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
             display: none;
-            z-index: 1000;
         }
 
         .install-prompt button {
@@ -233,41 +232,4 @@
             <audio id="audio-player" controls style="display: none;"></audio>
         </div>
         <footer>DESIGNED BY ANDRE WANYU</footer>
-    </div>
-    <div id="install-prompt" class="install-prompt">
-        Install Text & Speech Converter? <button id="install-btn">Install</button>
-    </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
-    <script src="/speech.js"></script>
-    <script>
-        let deferredPrompt;
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            const installPrompt = document.getElementById('install-prompt');
-            installPrompt.style.display = 'block';
-
-            document.getElementById('install-btn').addEventListener('click', () => {
-                installPrompt.style.display = 'none';
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    deferredPrompt.userChoice.then((choiceResult) => {
-                        if (choiceResult.outcome === 'accepted') {
-                            console.log('User accepted the install prompt');
-                        }
-                        deferredPrompt = null;
-                    });
-                }
-            });
-        });
-
-        // Register the service worker
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js')
-                .then(() => console.log('Service Worker registered'))
-                .catch(err => console.error('Service Worker registration failed:', err));
-        }
-    </script>
-</body>
-</html>
+        <div id="install-prompt
